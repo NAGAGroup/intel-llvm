@@ -385,6 +385,7 @@ macro(add_libclc_builtin_set arch_suffix)
       set( obj_suffix_mangled "${obj_suffix}")
     endif()
     # All permutations of [l32, l64] and [signed, unsigned]
+    get_host_tool_path(libclc-remangler LIBCLC_REMANGLER libclc-remangler_exe libclc-remangler_target)
     foreach(long_width ${long_widths})
       foreach(signedness ${char_signedness})
         # Remangle
@@ -392,13 +393,13 @@ macro(add_libclc_builtin_set arch_suffix)
             "${LIBCLC_LIBRARY_OUTPUT_INTDIR}/remangled-${long_width}-${signedness}_char.${obj_suffix_mangled}" )
         add_custom_command( OUTPUT "${builtins_remangle_path}"
           COMMAND ${CMAKE_COMMAND} -E make_directory ${LIBCLC_LIBRARY_OUTPUT_INTDIR}
-          COMMAND libclc::libclc-remangler
+          COMMAND ${libclc-remangler_exe}
           -o "${builtins_remangle_path}"
           --long-width=${long_width}
           --char-signedness=${signedness}
           --input-ir=${builtins_lib}
           ${dummy_in}
-          DEPENDS ${builtins_lib} libclc::libclc-remangler ${dummy_in})
+          DEPENDS ${builtins_lib} ${libclc-remangler_target} ${dummy_in})
         add_custom_target( "remangled-${long_width}-${signedness}_char.${obj_suffix_mangled}" ALL
           DEPENDS "${builtins_remangle_path}" "${dummy_in}")
         set_target_properties("remangled-${long_width}-${signedness}_char.${obj_suffix_mangled}"
@@ -425,12 +426,12 @@ macro(add_libclc_builtin_set arch_suffix)
       math(EXPR libclc-remangler-test-no "${libclc-remangler-test-no}+1")
       set(current-test "libclc-remangler-test-${obj_suffix}-${libclc-remangler-test-no}")
       add_custom_target(${current-test}
-        COMMAND libclc::libclc-remangler
+        COMMAND ${libclc-remangler_exe}
         --long-width=l32
         --char-signedness=signed
         --input-ir=${target-ir}
         ${dummy_in} -t -o -
-        DEPENDS ${builtins_lib} "${dummy_in}" libclc::libclc-remangler)
+        DEPENDS ${builtins_lib} "${dummy_in}" ${libclc-remangler_target})
       list(APPEND libclc-remangler-tests ${current-test})
     endforeach()
   endif()

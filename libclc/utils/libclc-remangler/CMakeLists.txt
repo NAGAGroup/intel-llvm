@@ -25,8 +25,4 @@ clang_target_link_libraries(libclc-remangler
   LLVMOption
   )
 
-# If we've not already imported a libclc-remangler tool from an external build,
-# set it up now.
-if(NOT TARGET libclc::libclc-remangler)
-  add_executable(libclc::libclc-remangler ALIAS libclc-remangler)
-endif()
+setup_host_tool(libclc-remangler LIBCLC_REMANGLER libclc-remangler_exe libclc-remangler_target)
