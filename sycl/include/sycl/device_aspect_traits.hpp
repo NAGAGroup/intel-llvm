@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "device_aspect_macros.hpp" // for __SYCL_ALL_DEVICES_HAVE_* macro
-#include <sycl/aspects.hpp>         // for aspect
+#include "sycl/device_aspect_macros.hpp" // for __SYCL_ALL_DEVICES_HAVE_* macro
+#include <sycl/aspects.hpp>              // for aspect
 
 #include <type_traits> // for bool_constant
 
